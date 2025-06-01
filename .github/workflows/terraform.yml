@@ -1,0 +1,100 @@
+name: "Terraform Workflow"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      aws-region:
+        type: string
+        required: true
+    secrets:
+      TF_AWS_ROLE_ARN:
+        required: true
+      TF_AWS_STATEFILE_S3_BUCKET:
+        required: true
+      TF_AWS_LOCK_DYNAMODB_TABLE:
+        required: true
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.TF_AWS_ROLE_ARN }}
+          role-session-name: github-actions-pipeline-to-aws
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Read destroy configuration
+        id: read-destroy-config
+        run: |
+          DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
+          echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
+
+      - name: Terraform Init
+        run: |
+          cd infra && terraform init \
+            -backend-config="bucket=${{ secrets.TF_AWS_STATEFILE_S3_BUCKET }}" \
+            -backend-config="key=${{ github.event.repository.name }}" \
+            -backend-config="region=${{ inputs.aws-region }}" \
+            -backend-config="dynamodb_table=${{ secrets.TF_AWS_LOCK_DYNAMODB_TABLE }}"
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Destroy
+        if: steps.read-destroy-config.outputs.destroy == 'true'
+        id: terraform-destroy
+        run: |
+          cd infra
+          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform destroy \
+            -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" \
+            -var="account_username=${{ github.actor }}" \
+            -var="region=${{ inputs.aws-region }}" \
+            -var="environment=${{ inputs.environment }}" \
+            -auto-approve
+
+      - name: Terraform Plan
+        if: steps.read-destroy-config.outputs.destroy != 'true'
+        id: terraform-plan
+        run: |
+          # Navega para o diretório infra antes de executar os comandos terraform
+          cd infra
+          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform plan \
+            -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" \
+            -var="account_username=${{ github.actor }}" \
+            -var="region=${{ inputs.aws-region }}" \
+            -var="environment=${{ inputs.environment }}" \
+            -out="${{ inputs.environment }}.plan"
+
+      - name: Terraform Apply
+        if: steps.read-destroy-config.outputs.destroy != 'true'
+        id: terraform-apply
+        run: |
+          cd infra
+          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform apply "${{ inputs.environment }}.plan"
+
+      - name: Upload Static Files to S3
+        if: steps.read-destroy-config.outputs.destroy != 'true' && steps.terraform-apply.conclusion == 'success'
+        run: |
+          AWS_S3_BUCKET_NAME=$(terraform -chdir=infra output -raw s3_static_site_bucket_name)
+          echo "Uploading files from src/ to s3://${AWS_S3_BUCKET_NAME}/"
+          aws s3 sync src/ s3://${AWS_S3_BUCKET_NAME}/ --delete

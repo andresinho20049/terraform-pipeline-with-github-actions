@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IaC Automated</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body>
+
+    <div class="bg-gray-100 py-3 text-right">
+        <div class="container mx-auto px-4">
+            <a href="index-pt.html" class="text-blue-700 hover:text-blue-900 font-medium">Português (pt-BR)</a>
+        </div>
+    </div>
+
+    <header class="hero-section text-white py-20 md:py-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                Effortless Infrastructure.<br> Automated. Secure.
+            </h1>
+            <p class="text-lg md:text-xl font-light opacity-90 mb-8 max-w-2xl mx-auto">
+                Empower your teams with a modern and collaborative Infrastructure as Code workflow, powered by Terraform and GitHub Actions.
+            </p>
+            <a href="#solution-overview" class="bg-white text-blue-700 hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 py-3 px-8 rounded-full text-lg font-semibold shadow-lg">
+                Explore the Solution
+            </a>
+        </div>
+    </header>
+
+    <section id="solution-overview" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900">Our Solution Overview</h2>
+            <p class="text-lg text-center max-w-2xl mx-auto text-gray-700">
+                We provide an end-to-end Infrastructure as Code (IaC) workflow, combining the robustness of Terraform for infrastructure management with the powerful automation of GitHub Actions for continuous integration and delivery. Our focus is on ensuring consistent, secure, and highly collaborative deployments.
+            </p>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">How It Works?</h2>
+            <div class="space-y-10 max-w-2xl mx-auto">
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl mr-6 mb-4 md:mb-0 flex-shrink-0 text-blue-500">1.</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">Define Your Infrastructure</h3>
+                        <p class="text-gray-600">Write your infrastructure configurations in <strong>Terraform (.tf)</strong> files. Every change is versioned in your GitHub repository.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl mr-6 mb-4 md:mb-0 flex-shrink-0 text-blue-500">2.</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">Commit and Push</h3>
+                        <p class="text-gray-600">Upon a <code>git push</code> to the configured branch, <strong>GitHub Actions</strong> is automatically triggered.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl mr-6 mb-4 md:mb-0 flex-shrink-0 text-blue-500">3.</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">Automated Pipeline</h3>
+                        <p class="text-gray-600">The GitHub Actions pipeline executes <code>terraform init</code>, <code>plan</code>, and <code>apply</code>, securely interacting with your AWS account via OIDC.</p>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row items-start md:items-center bg-white p-6 rounded-xl shadow-md">
+                    <div class="text-5xl mr-6 mb-4 md:mb-0 flex-shrink-0 text-blue-500">4.</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">Centralized and Secure State</h3>
+                        <p class="text-gray-600">The Terraform `statefile` is stored in an AWS S3 bucket, and operations are locked by a DynamoDB table, preventing conflicts in collaborative environments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card">
+                    <div class="text-4xl mb-4 text-blue-500">📜</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Infrastructure as Code (IaC)</h3>
+                    <p class="text-gray-600">Define your infrastructure declaratively, ensuring reproducibility and versioning with <strong>Terraform</strong>.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-4 text-blue-500">⚙️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">CI/CD Automation</h3>
+                    <p class="text-gray-600">A robust pipeline with <strong>GitHub Actions</strong> automates `plan` and `apply` for every `push` to the repository.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-4 text-blue-500">🗃️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Remote State on S3</h3>
+                    <p class="text-gray-600">Secure and centralized `statefile` storage in an <strong>AWS S3</strong> bucket, facilitating teamwork and recovery.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-4 text-blue-500">🔒</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">State Locking with DynamoDB</h3>
+                    <p class="text-gray-600">Prevent conflicts and state corruption with operation locking via an <strong>AWS DynamoDB</strong> table.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-4 text-blue-500">🛡️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Secure AWS Integration</h3>
+                    <p class="text-gray-600">Robust authentication via <strong>OIDC</strong> and a dedicated <strong>IAM Role</strong>, following AWS security best practices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="prerequisites" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900">AWS Prerequisites</h2>
+            <p class="text-lg text-center max-w-2xl mx-auto mb-12 text-gray-700">
+                To effectively implement this solution within your AWS account, ensure the following are pre-configured:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="prerequisite-card">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800 flex items-center"><span class="text-2xl mr-3 text-yellow-600">🔑</span>IAM Provider and Role</h3>
+                    <p class="text-gray-600">An OIDC provider and a dedicated IAM Role with appropriate policies allowing GitHub Actions to assume the role and interact with your AWS resources.</p>
+                </div>
+                <div class="prerequisite-card">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800 flex items-center"><span class="text-2xl mr-3 text-green-600">📦</span>S3 Bucket for Statefile</h3>
+                    <p class="text-gray-600">A specific S3 bucket to store your Terraform state files. Versioning must be enabled for rollback capabilities.</p>
+                </div>
+                <div class="prerequisite-card">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800 flex items-center"><span class="text-2xl mr-3 text-red-600">🚫</span>DynamoDB Lock Table</h3>
+                    <p class="text-gray-600">A DynamoDB table configured specifically for Terraform state locking, preventing concurrent modifications that could corrupt the state.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-blue-700 text-white text-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Infrastructure?</h2>
+            <p class="text-lg md:text-xl font-light mb-8 max-w-2xl mx-auto opacity-90">
+                Start building, versioning, and automating your AWS infrastructure with confidence. Explore the source code on GitHub to see how it all fits together.
+            </p>
+            <a href="https://github.com/andresinho20049/terraform-pipeline-with-github-actions" target="_blank" class="bg-white text-blue-700 hover:bg-gray-100 hover:text-blue-800 transition-all duration-300 py-3 px-8 rounded-full text-lg font-semibold shadow-lg">
+                View on GitHub
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-8 bg-gray-900 text-white text-center text-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-center md:justify-between mb-4">
+                <div class="mb-4 md:mb-0 flex flex-col items-center space-y-2">
+                    <img src="https://github.com/andresinho20049/andresinho20049/blob/main/public/Logo.png?raw=true" alt="Andresinho20049 Logo" class="h-10 mx-auto md:mx-0">
+                    <p>Developed by <a href="https://github.com/andresinho20049" target="_blank" class="text-blue-400 hover:underline">Andresinho20049</a></p>
+                </div>
+                <div class="space-y-1">
+                    <p>
+                        License: <a href="https://github.com/andresinho20049/terraform-pipeline-with-github-actions/blob/main/LICENSE" target="_blank" class="text-blue-400 hover:underline">MIT License</a>
+                    </p>
+                    <p>&copy; 2025 All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

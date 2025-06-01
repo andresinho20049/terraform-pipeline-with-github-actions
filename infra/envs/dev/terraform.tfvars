@@ -1,0 +1,1 @@
+bucket_suffix_name="static-site"
