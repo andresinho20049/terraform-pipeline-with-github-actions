@@ -1,0 +1,22 @@
+name: "Pipeline for Prod Environment"
+description: "This workflow runs on pushes to the main branch and deploys the Terraform configuration for the prod environment."
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: prod
+      aws-region: "us-east-1"
+    secrets:
+      TF_AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+      TF_AWS_STATEFILE_S3_BUCKET: ${{ secrets.AWS_STATEFILE_S3_BUCKET }}
+      TF_AWS_LOCK_DYNAMODB_TABLE: ${{ secrets.AWS_LOCK_DYNAMODB_TABLE }}
