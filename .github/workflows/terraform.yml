@@ -57,19 +57,6 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Terraform Destroy
-        if: steps.read-destroy-config.outputs.destroy == 'true'
-        id: terraform-destroy
-        run: |
-          cd infra
-          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
-          terraform destroy \
-            -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" \
-            -var="account_username=${{ github.actor }}" \
-            -var="region=${{ inputs.aws-region }}" \
-            -var="environment=${{ inputs.environment }}" \
-            -auto-approve
-
       - name: Terraform Plan
         if: steps.read-destroy-config.outputs.destroy != 'true'
         id: terraform-plan
@@ -98,3 +85,38 @@ jobs:
           AWS_S3_BUCKET_NAME=$(terraform -chdir=infra output -raw s3_static_site_bucket_name)
           echo "Uploading files from src/ to s3://${AWS_S3_BUCKET_NAME}/"
           aws s3 sync src/ s3://${AWS_S3_BUCKET_NAME}/ --delete
+
+      # This step is only executed if the destroy flag is set to true
+      - name: Empty S3 Bucket Before Destroy
+        if: steps.read-destroy-config.outputs.destroy == 'true'
+        run: |
+          # This step will empty the S3 bucket before destroying the infrastructure
+          AWS_S3_BUCKET_NAME=$(terraform -chdir=infra output -raw s3_static_site_bucket_name)
+          echo "Attempting to empty s3://${AWS_S3_BUCKET_NAME} before destroy..."
+
+          # list and delete ALL object versions in the bucket
+          aws s3api list-object-versions --bucket "${AWS_S3_BUCKET_NAME}" | \
+          jq -r '.Versions[] | {Key: .Key, VersionId: .VersionId}' | \
+          jq -s '{Objects: .}' | \
+          aws s3api delete-objects --bucket "${AWS_S3_BUCKET_NAME}" --delete-mfa "" --cli-input-json file:///dev/stdin
+
+          # List and delete all delete markers in the bucket
+          aws s3api list-object-versions --bucket "${AWS_S3_BUCKET_NAME}" | \
+          jq -r '.DeleteMarkers[] | {Key: .Key, VersionId: .VersionId}' | \
+          jq -s '{Objects: .}' | \
+          aws s3api delete-objects --bucket "${AWS_S3_BUCKET_NAME}" --delete-mfa "" --cli-input-json file:///dev/stdin
+
+          echo "Bucket s3://${AWS_S3_BUCKET_NAME} should now be empty."
+
+      - name: Terraform Destroy
+        if: steps.read-destroy-config.outputs.destroy == 'true' && steps.empty-s3-bucket-before-destroy.conclusion == 'success'
+        id: terraform-destroy
+        run: |
+          cd infra
+          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+          terraform destroy \
+            -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" \
+            -var="account_username=${{ github.actor }}" \
+            -var="region=${{ inputs.aws-region }}" \
+            -var="environment=${{ inputs.environment }}" \
+            -auto-approve
