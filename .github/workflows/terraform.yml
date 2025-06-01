@@ -88,7 +88,7 @@ jobs:
 
       # Only run the following steps if the destroy flag is set to true
       - name: Terraform Destroy
-        if: steps.read-destroy-config.outputs.destroy == 'true' && steps.empty-s3-bucket-before-destroy.conclusion == 'success'
+        if: steps.read-destroy-config.outputs.destroy == 'true'
         id: terraform-destroy
         run: |
           cd infra
