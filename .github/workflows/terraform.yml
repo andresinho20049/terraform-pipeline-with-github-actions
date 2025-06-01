@@ -91,3 +91,10 @@ jobs:
           cd infra
           terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
           terraform apply "${{ inputs.environment }}.plan"
+
+      - name: Upload Static Files to S3
+        if: steps.read-destroy-config.outputs.destroy != 'true' && steps.terraform-apply.conclusion == 'success'
+        run: |
+          AWS_S3_BUCKET_NAME=$(terraform -chdir=infra output -raw s3_static_site_bucket_name)
+          echo "Uploading files from src/ to s3://${AWS_S3_BUCKET_NAME}/"
+          aws s3 sync src/ s3://${AWS_S3_BUCKET_NAME}/ --delete
