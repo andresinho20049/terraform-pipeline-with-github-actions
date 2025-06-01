@@ -1,0 +1,20 @@
+/* style.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos personalizados */
+body {
+    font-family: 'Poppins', sans-serif;
+    @apply bg-gray-50 text-gray-800;
+}
+
+/* Estilos para o hero section */
+.hero-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+}
+
+/* Estilos para cards de feature e pré-requisitos */
+.feature-card, .prerequisite-card {
+    @apply bg-white p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+}
