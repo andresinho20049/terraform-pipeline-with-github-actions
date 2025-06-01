@@ -89,7 +89,7 @@ jobs:
       # Only run the following steps if the destroy flag is set to true
       - name: Get S3 Bucket Name for Destroy
         id: get-s3-bucket-name-destroy
-        if: steps.read-destroy-config.outputs.destroy == 'true' && steps.terraform-init-step.conclusion == 'success'
+        if: steps.read-destroy-config.outputs.destroy == 'true'
         run: |
           S3_BUCKET_NAME=$(terraform -chdir=infra output -raw s3_static_site_bucket_name)
           echo "s3_bucket_name_for_destroy=$S3_BUCKET_NAME" >> $GITHUB_OUTPUT # Usar um nome de output exclusivo
