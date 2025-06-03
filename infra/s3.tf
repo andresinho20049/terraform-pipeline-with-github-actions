@@ -20,17 +20,25 @@ resource "aws_s3_bucket_public_access_block" "s3_static_site_bucket_public_acces
   restrict_public_buckets = false
 }
 
-# Enable bucket policy for public read access
+# Enable CloudFront access to the S3 bucket
 resource "aws_s3_bucket_policy" "s3_static_site_bucket_policy" {
   bucket = aws_s3_bucket.s3_static_site_bucket.id
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
-        Principal = "*"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
         Action = "s3:GetObject"
         Resource = "${aws_s3_bucket.s3_static_site_bucket.arn}/*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceArn" = aws_cloudfront_distribution.cloudfront_s3_static_website.arn
+          }
+        }
       }
     ]
   })
