@@ -9,6 +9,8 @@ resource "aws_s3_bucket_versioning" "s3_static_site_bucket_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+
+  depends_on = [ aws_s3_bucket.s3_static_site_bucket ]
 }
 
 # Public access block
@@ -18,6 +20,8 @@ resource "aws_s3_bucket_public_access_block" "s3_static_site_bucket_public_acces
   ignore_public_acls      = false
   block_public_policy     = false
   restrict_public_buckets = false
+
+  depends_on = [ aws_s3_bucket.s3_static_site_bucket ]
 }
 
 # Enable CloudFront access to the S3 bucket
@@ -42,6 +46,8 @@ resource "aws_s3_bucket_policy" "s3_static_site_bucket_policy" {
       }
     ]
   })
+
+  depends_on = [aws_s3_bucket.s3_static_site_bucket, aws_s3_bucket_versioning.s3_static_site_bucket_versioning]
 }
 
 # Configure static website hosting
@@ -53,6 +59,8 @@ resource "aws_s3_bucket_website_configuration" "s3_static_site_bucket_website_co
   error_document {
     key = "error.html"
   }
+
+  depends_on = [ aws_s3_bucket.s3_static_site_bucket, aws_s3_bucket_versioning.s3_static_site_bucket_versioning ]
 }
 
 # Configure lifecycle rules for the bucket to remove old versions after a certain period 
@@ -68,4 +76,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "s3_static_site_bucket_lifecycl
       noncurrent_days = 30
     }
   }
+
+  depends_on = [ aws_s3_bucket.s3_static_site_bucket, aws_s3_bucket_versioning.s3_static_site_bucket_versioning ]
 }

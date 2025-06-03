@@ -4,6 +4,8 @@ resource "aws_cloudfront_origin_access_control" "cloudfront_s3_oac" {
     origin_access_control_origin_type  = "s3"
     signing_behavior                  = "always"
     signing_protocol                  = "sigv4"
+
+    depends_on = [ aws_s3_bucket.s3_static_site_bucket, aws_s3_bucket_versioning.s3_static_site_bucket_versioning ]
 }
 
 resource "aws_cloudfront_distribution" "cloudfront_s3_static_website" {
@@ -62,4 +64,6 @@ resource "aws_cloudfront_cache_policy" "cloudfront_s3_static_site_cache_policy" 
             query_string_behavior = "none"
         }
     }
+
+    depends_on = [ aws_cloudfront_distribution.cloudfront_s3_static_website ]
 }
