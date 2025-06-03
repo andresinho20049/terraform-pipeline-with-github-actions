@@ -54,7 +54,13 @@ Before starting, make sure your AWS account is configured with the following res
 
 * **OIDC Provider for GitHub Actions:** Configure an identity provider (OIDC) in AWS IAM to allow GitHub Actions to assume an **IAM Role** securely. For a detailed guide, see the official AWS documentation: [Use IAM roles to connect GitHub Actions to actions in AWS](https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/).
 
-* **Dedicated IAM Role:** Create a specific IAM Role for GitHub Actions, with the necessary permission policies to manage resources in S3 (create/configure buckets, upload files), DynamoDB (create/access lock tables) and other services that your infrastructure may use.
+* **Dedicated IAM Role:** Create a dedicated IAM role for GitHub Actions. It will need the **permission policies** required to manage all of your infrastructure resources, including:
+    * **S3:** Create and configure buckets, manage objects.
+    * **DynamoDB:** Create and access lock tables for Terraform.
+    * **CloudFront:** Create, configure, and manage distributions, OACs (Origin Access Controls), and cache policies.
+    * Other AWS services that your Terraform solution may provision.
+
+    **Important:** Always check the Terraform output for `AccessDenied` errors and add any missing permissions to your IAM role.
 * **S3 Bucket for Statefile:** Have a previously created S3 bucket dedicated to storing your **Terraform Statefile**. This bucket is crucial for managing the state of your infrastructure and must have **versioning enabled** to allow rollbacks.
 * **DynamoDB Table for State Locking:** Create a table in DynamoDB to be used as a **state lock** mechanism by Terraform. This prevents multiple Terraform executions from corrupting the `statefile` in collaborative environments. The table must have a **Partition Key** called `LockID` of type `String`.
 

@@ -54,7 +54,13 @@ Este projeto utiliza **Terraform** para provisionar a infraestrutura e **GitHub 
 Antes de iniciar, certifique-se de que sua conta AWS esteja configurada com os seguintes recursos:
 
   * **Provider OIDC para GitHub Actions:** Configure um provedor de identidade (OIDC) no AWS IAM para permitir que o GitHub Actions assuma uma **Role IAM** de forma segura. Para um guia detalhado, consulte a documentação oficial da AWS: [Use IAM roles to connect GitHub Actions to actions in AWS](https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/).
-  * **Role IAM Dedicada:** Crie uma Role IAM específica para o GitHub Actions, com as políticas de permissão necessárias para gerenciar recursos no S3 (criar/configurar buckets, subir arquivos), DynamoDB (criar/acessar tabelas de lock) e outros serviços que sua infraestrutura possa usar.
+  * **Role IAM Dedicada:** Crie uma Role IAM específica para o GitHub Actions. Ela precisará das **políticas de permissão necessárias** para gerenciar todos os recursos da sua infraestrutura, incluindo:
+      * **S3:** Criar e configurar buckets, gerenciar objetos.
+      * **DynamoDB:** Criar e acessar tabelas de lock para o Terraform.
+      * **CloudFront:** Criar, configurar e gerenciar distribuições, OACs (Origin Access Controls) e políticas de cache.
+      * Outros serviços AWS que sua solução Terraform possa provisionar.
+
+      **Importante:** Verifique sempre a saída do Terraform para erros de `AccessDenied` e adicione as permissões faltantes à sua Role IAM.
   * **Bucket S3 para Statefile:** Tenha um bucket S3 previamente criado e dedicado ao armazenamento do seu **Terraform Statefile**. Este bucket é crucial para o gerenciamento de estado da sua infraestrutura e deve ter o **versionamento habilitado** para possibilitar rollbacks.
   * **Tabela DynamoDB para State Locking:** Crie uma tabela no DynamoDB para ser utilizada como um mecanismo de **lock de estado** pelo Terraform. Isso evita que múltiplas execuções do Terraform corrompam o `statefile` em ambientes colaborativos. A tabela deve ter uma **Partition Key** chamada `LockID` do tipo `String`.
 
