@@ -43,7 +43,7 @@ resource "aws_cloudfront_distribution" "cloudfront_s3_static_website" {
     tags = {
         Name = "${var.account_username}.${var.region}.${var.bucket_suffix_name}.cloudfront.${var.environment}"
     }
-    depends_on = [aws_s3_bucket.s3_static_site_bucket, aws_cloudfront_origin_access_control.cloudfront_s3_oac]
+    depends_on = [aws_s3_bucket.s3_static_site_bucket, aws_cloudfront_origin_access_control.cloudfront_s3_oac, aws_cloudfront_cache_policy.cloudfront_s3_static_site_cache_policy]
 }
 
 resource "aws_cloudfront_cache_policy" "cloudfront_s3_static_site_cache_policy" {
@@ -64,6 +64,4 @@ resource "aws_cloudfront_cache_policy" "cloudfront_s3_static_site_cache_policy" 
             query_string_behavior = "none"
         }
     }
-
-    depends_on = [ aws_cloudfront_distribution.cloudfront_s3_static_website ]
 }
