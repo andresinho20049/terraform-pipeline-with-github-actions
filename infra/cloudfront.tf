@@ -1,5 +1,5 @@
 resource "aws_cloudfront_origin_access_control" "cloudfront_s3_oac" {
-    name                              = "${var.account_username}.${var.region}.${var.bucket_suffix_name}.s3-oac.${var.environment}"
+    name                              = "${var.account_username}-${var.region}-${var.bucket_suffix_name}-s3-oac-${var.environment}"
     description                       = "OAC for S3 ${aws_s3_bucket.s3_static_site_bucket.bucket}"
     origin_access_control_origin_type  = "s3"
     signing_behavior                  = "always"
@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "cloudfront_s3_static_website" {
 }
 
 resource "aws_cloudfront_cache_policy" "cloudfront_s3_static_site_cache_policy" {
-    name = "${var.account_username}.${var.region}.${var.bucket_suffix_name}.cache-policy.${var.environment}"
+    name = "${var.account_username}-${var.region}-${var.bucket_suffix_name}-cache-policy-${var.environment}"
     comment = "Cache policy for S3 static site"
     default_ttl = 3600
     max_ttl = 86400
