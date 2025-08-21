@@ -7,6 +7,8 @@ Este projeto oferece uma solução robusta para o gerenciamento e provisionament
 ## 🚀 Visão Geral
 O objetivo principal deste repositório é permitir que você defina, provisione e atualize sua infraestrutura AWS de forma declarativa e automatizada. Ao realizar um git push para este repositório, o GitHub Actions se encarregará de executar os comandos do Terraform, garantindo que sua infraestrutura na AWS esteja sempre sincronizada com suas configurações definidas no código.
 
+![Diagram](/assets/terraform-pipeline-with-github-actions-Page-2.drawio.svg)
+
 ## ✨ Funcionalidades Principais
 Infraestrutura como Código (IaC) com Terraform: Defina sua infraestrutura AWS usando arquivos de configuração Terraform, garantindo reprodutibilidade e versionamento.
 
@@ -48,6 +50,8 @@ Os arquivos HTML, CSS e outros assets do seu site estático, como `index.html` e
 ## 🎯 Como Executar
 
 Este projeto utiliza **Terraform** para provisionar a infraestrutura e **GitHub Actions** para automação de CI/CD, garantindo um deploy de site estático na AWS. Siga os passos abaixo para configurá-lo e executá-lo em seu ambiente:
+
+![Diagram-more-detail](/assets/terraform-pipeline-with-github-actions-Page-1.drawio.svg)
 
 ### 1\. Pré-requisitos na AWS
 
